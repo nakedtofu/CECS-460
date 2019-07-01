@@ -1,0 +1,261 @@
+               ; enter following command line to genereate simulation and list files
+               
+               ; python tramelblaze.py DemoOne_fixed.tba
+               
+               ; DemoOne_fixed.tba
+               ; demo program written for tramel blaze assembler
+               ; 13 November 2018
+               
+               ; This code supports ProjectOne_blaze
+               
+               ; declare constants for coding
+               
+               ZEROS           EQU  0000
+               ONE             EQU  0001
+               COUNT           EQU  R9
+               SCRATCH_PTR     EQU  R4
+               SIZE            EQU  R5
+               LED             EQU  R2
+               LED_MAX         EQU  R3
+               CHARACTER       EQU  R6
+                          
+               ; initialize scratchpad RAM and registers
+               ; message stored in backwards order (first in last out)
+               
+               START           LOAD COUNT, ZEROS
+0000 AE09 0000
+                               LOAD SCRATCH_PTR, ZEROS
+0002 AE04 0000
+                               LOAD SIZE, ZEROS
+0004 AE05 0000
+                               LOAD CHARACTER, ZEROS
+0006 AE06 0000
+                               LOAD LED, ONE
+0008 AE02 0001
+                               LOAD LED_MAX, 8000
+000A AE03 8000
+               
+               ; <LF>                
+                               LOAD CHARACTER, 000A
+000C AE06 000A
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+000F 8204 0001
+               ; <CR>
+                               LOAD CHARACTER, 000D
+0011 AE06 000D
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0014 8204 0001
+               ; <SPACE>
+                               LOAD CHARACTER, 0020
+0016 AE06 0020
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0019 8204 0001
+               
+               ; [COUNT4]
+               ;                LOAD CHARACTER, COUNT
+               ;                STORE CHARACTER, SCRATCH_PTR
+               ;                ADD SCRATCH_PTR, ONE
+               ; [COUNT3]
+               ;                LOAD CHARACTER, COUNT
+               ;                STORE CHARACTER, SCRATCH_PTR
+               ;                ADD SCRATCH_PTR, ONE
+               ; [COUNT2]
+               ;                LOAD CHARACTER, COUNT
+               ;                STORE CHARACTER, SCRATCH_PTR
+               ;                ADD SCRATCH_PTR, ONE
+               ; [COUNT1]
+               ;                LOAD CHARACTER, COUNT
+               ;                STORE CHARACTER, SCRATCH_PTR
+               ;                ADD SCRATCH_PTR, ONE
+               ; [COUNT0]
+               ;                LOAD CHARACTER, COUNT
+               ;                STORE CHARACTER, SCRATCH_PTR
+               ;                ADD SCRATCH_PTR, ONE
+               
+               ; <SPACE>
+                               LOAD CHARACTER, 0020
+001B AE06 0020
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+001E 8204 0001
+               ; -
+                               LOAD CHARACTER, 002D
+0020 AE06 002D
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0023 8204 0001
+               ; <SPACE>
+                               LOAD CHARACTER, 0020
+0025 AE06 0020
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0028 8204 0001
+               ; 0
+                               LOAD CHARACTER, 0030
+002A AE06 0030
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+002D 8204 0001
+               ; 6
+                               LOAD CHARACTER, 0036
+002F AE06 0036
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0032 8204 0001
+               ; 4
+                               LOAD CHARACTER, 0034
+0034 AE06 0034
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0037 8204 0001
+               ; <SPACE>
+                               LOAD CHARACTER, 0020
+0039 AE06 0020
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+003C 8204 0001
+               ; S
+                               LOAD CHARACTER, 0053
+003E AE06 0053
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0041 8204 0001
+               ; C
+                               LOAD CHARACTER, 0043
+0043 AE06 0043
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0046 8204 0001
+               ; E
+                               LOAD CHARACTER, 0045
+0048 AE06 0045
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+004B 8204 0001
+               ; C
+                               LOAD CHARACTER, 0043
+004D AE06 0043
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0050 8204 0001
+               ; <SPACE>
+                               LOAD CHARACTER, 0020
+0052 AE06 0020
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0055 8204 0001
+               ; B
+                               LOAD CHARACTER, 0042
+0057 AE06 0042
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+005A 8204 0001
+               ; L
+                               LOAD CHARACTER, 004C
+005C AE06 004C
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+005F 8204 0001
+               ; U
+                               LOAD CHARACTER, 0055
+0061 AE06 0055
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0064 8204 0001
+               ; S
+                               LOAD CHARACTER, 0053
+0066 AE06 0053
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+0069 8204 0001
+               ; C
+                               LOAD CHARACTER, 0043
+006B AE06 0043
+                               STORE CHARACTER, SCRATCH_PTR
+7646
+                               ADD SCRATCH_PTR, ONE
+006E 8204 0001
+                               
+                               ADD SIZE, SCRATCH_PTR
+0445
+                                              
+                               ENINT
+0071 1E00               
+               ; main loop incrementing R0
+               
+               FIRST           COMP LED_MAX, LED
+1A23
+                               JUMPZ RELOAD
+0073 AA00 007a
+                               ADD LED, LED
+0422
+                               OUTPUT LED, 0006
+0076 B802 0006
+                               JUMP FIRST
+0078 A400 0072
+               
+               RELOAD          LOAD LED, 0001
+007A AE02 0001
+                               OUTPUT LED, 0006
+007C B802 0006
+                               JUMP FIRST
+007E A400 0072
+               
+               ; address for interrupt service routine
+               
+                               ADDRESS  0300
+               
+               ; set up for loop in isr
+               
+               ISR             SUB SCRATCH_PTR, ONE
+0300 DC04 0001
+                               FETCH CHARACTER, SCRATCH_PTR
+7246
+                               OUTPUT CHARACTER, 0000
+0303 B806 0000
+                               JUMPZ RESET_SCRATCH 
+0305 AA00 0308
+                               RETEN
+0307 4600               
+               RESET_SCRATCH   ADD SCRATCH_PTR, SIZE
+0454
+                               ADD COUNT, ONE
+0309 8209 0001
+                               RETEN
+030B 4600               
+               ; ISR vectored through 0FFE
+               
+                               ADDRESS 0FFE
+               
+                               JUMP ISR
+0FFE A400 0300
+               
+                               END
+               
+               ~
+               ~
+               ~
+               ~
+               ~

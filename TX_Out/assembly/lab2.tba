@@ -1,0 +1,179 @@
+; enter following command line to genereate simulation and list files
+
+; python tramelblaze.py DemoOne_fixed.tba
+
+; DemoOne_fixed.tba
+; demo program written for tramel blaze assembler
+; 13 November 2018
+
+; This code supports ProjectOne_blaze
+
+; declare constants for coding
+
+ZEROS           EQU  0000
+ONE             EQU  0001
+COUNT           EQU  R9
+SCRATCH_PTR     EQU  R4
+SIZE            EQU  R5
+LED             EQU  R2
+LED_MAX         EQU  R3
+CHARACTER       EQU  R6
+           
+; initialize scratchpad RAM and registers
+; message stored in backwards order (first in last out)
+
+START           LOAD COUNT, ZEROS
+                LOAD SCRATCH_PTR, ZEROS
+                LOAD SIZE, ZEROS
+                LOAD CHARACTER, ZEROS
+                LOAD LED, ONE
+                LOAD LED_MAX, 8000
+
+; <LF>                
+                LOAD CHARACTER, 000A
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; <CR>
+                LOAD CHARACTER, 000D
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; <SPACE>
+                LOAD CHARACTER, 0020
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+
+; [COUNT4]
+;                LOAD CHARACTER, COUNT
+;                STORE CHARACTER, SCRATCH_PTR
+;                ADD SCRATCH_PTR, ONE
+; [COUNT3]
+;                LOAD CHARACTER, COUNT
+;                STORE CHARACTER, SCRATCH_PTR
+;                ADD SCRATCH_PTR, ONE
+; [COUNT2]
+;                LOAD CHARACTER, COUNT
+;                STORE CHARACTER, SCRATCH_PTR
+;                ADD SCRATCH_PTR, ONE
+; [COUNT1]
+;                LOAD CHARACTER, COUNT
+;                STORE CHARACTER, SCRATCH_PTR
+;                ADD SCRATCH_PTR, ONE
+; [COUNT0]
+;                LOAD CHARACTER, COUNT
+;                STORE CHARACTER, SCRATCH_PTR
+;                ADD SCRATCH_PTR, ONE
+
+; <SPACE>
+                LOAD CHARACTER, 0020
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; -
+                LOAD CHARACTER, 002D
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; <SPACE>
+                LOAD CHARACTER, 0020
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; 0
+                LOAD CHARACTER, 0030
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; 6
+                LOAD CHARACTER, 0036
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; 4
+                LOAD CHARACTER, 0034
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; <SPACE>
+                LOAD CHARACTER, 0020
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; S
+                LOAD CHARACTER, 0053
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; C
+                LOAD CHARACTER, 0043
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; E
+                LOAD CHARACTER, 0045
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; C
+                LOAD CHARACTER, 0043
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; <SPACE>
+                LOAD CHARACTER, 0020
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; B
+                LOAD CHARACTER, 0042
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; L
+                LOAD CHARACTER, 004C
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; U
+                LOAD CHARACTER, 0055
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; S
+                LOAD CHARACTER, 0053
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+; C
+                LOAD CHARACTER, 0043
+                STORE CHARACTER, SCRATCH_PTR
+                ADD SCRATCH_PTR, ONE
+                
+                ADD SIZE, SCRATCH_PTR
+                               
+                ENINT
+
+; main loop incrementing R0
+
+FIRST           COMP LED_MAX, LED
+                JUMPZ RELOAD
+                ADD LED, LED
+                OUTPUT LED, 0006
+                JUMP FIRST
+
+RELOAD          LOAD LED, 0001
+                OUTPUT LED, 0006
+                JUMP FIRST
+
+; address for interrupt service routine
+
+                ADDRESS  0300
+
+; set up for loop in isr
+
+ISR             SUB SCRATCH_PTR, ONE
+                FETCH CHARACTER, SCRATCH_PTR
+                OUTPUT CHARACTER, 0000
+                JUMPZ RESET_SCRATCH 
+                RETEN
+
+RESET_SCRATCH   ADD SCRATCH_PTR, SIZE
+                ADD COUNT, ONE
+                RETEN
+
+; ISR vectored through 0FFE
+
+                ADDRESS 0FFE
+
+                JUMP ISR
+
+                END
+
+~
+~
+~
+~
+~
